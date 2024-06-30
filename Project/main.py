@@ -14,3 +14,15 @@ def is_prime(number):
         if number % i == 0:
             return False
     return True
+
+def generate_prime(min_value, max_value):
+    '''
+    Generate a random prime number in a given range
+    :param min_value: The minimum value of the range
+    :param max_value: The maximum value of the range
+    :return: A random prime number within the specified range
+    '''
+    prime = random.randint(min_value, max_value)
+    while not is_prime(prime):
+        prime = random.randint(min_value, max_value)
+    return prime
