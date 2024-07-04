@@ -56,15 +56,16 @@ def mod_inverse(e, phi):
 
 
 def generate_keys():
-    p,q = generate_prime(1000,5000), generate_prime(1000,5000)
+    p, q = generate_prime(1000, 5000), generate_prime(1000, 5000)
 
     while p == q:
-        q = generate_prime(1000,5000)
+        q = generate_prime(1000, 5000)
 
     n = p * q
     phi_n = (p - 1) * (q - 1)
 
     e = random.randint(3, phi_n - 1)
+    g, _, _ = extended_gcd(e, phi_n)
 
     while g != 1:
         e = random.randint(3, phi_n - 1)
@@ -75,7 +76,35 @@ def generate_keys():
     return (e, n), (d, n), p, q, phi_n
 
 
+def encrypt_message(message, public_key):
+    e, n = public_key
+    message_encoded = [ord(ch) for ch in message]
+    ciphertext = [pow(ch, e, n) for ch in message_encoded]
+    return ciphertext
+
+def decrypt_message(ciphertext, private_key):
+    d, n = private_key
+    decoded_msg = [pow(ch, d, n) for ch in ciphertext]
+    message = "".join(chr(ch) for ch in decoded_msg)
+    return message
 
 
+def main():
+    message = input("Introduce el mensaje a cifrar: ")
+
+    public_key, private_key, p, q, phi_n = generate_keys()
+    print(f"Clave Pública: {public_key}")
+    print(f"Clave Privada: {private_key}")
+    print(f"p: {p}")
+    print(f"q: {q}")
+    print(f"phi(n): {phi_n}")
+
+    ciphertext = encrypt_message(message, public_key)
+    print(f"Texto cifrado: {ciphertext}")
+
+    decrypted_message = decrypt_message(ciphertext, private_key)
+    print(f"Texto descifrado: {decrypted_message}")
 
 
+if __name__ == "__main__":
+    main()
